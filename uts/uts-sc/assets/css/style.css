@@ -1,3 +1,42 @@
+/* =========================================================================
+   SIMPUS-Mini — Dell 1996 catalog re-skin (scope A: CSS only)
+   Adapted from the "Dell 1996" design language.
+   Closed palette, square corners (radius 0), hard bevels, literal page frame.
+   ========================================================================= */
+
+/* ===== Tokens (light "catalog day") ===== */
+:root {
+    --background: #ffffff;
+    --foreground: #000000;
+    --frame-ink: #000000;
+    --on-ink: #ffffff;
+    --muted: #f2f2f2;
+
+    /* Accent + links */
+    --primary: #6f7bff;            /* periwinkle action color */
+    --primary-foreground: #000000;
+    --destructive: #e91d2a;        /* red reserved for delete / errors */
+    --destructive-ink: #5f1113;
+    --link: #0000ee;               /* classic Mosaic blue */
+    --link-on-ink: #9aa2ff;        /* link blue on black surfaces */
+    --yellow-sticker: #fcc20f;
+    --purple-stripe: #6a26a4;
+    --success-ink: #5f5c12;
+
+    /* Ribbon-card tint family (closed palette) */
+    --tint-olive: #c9cf6b;
+    --tint-sage: #b3bd95;
+    --tint-salmon: #e08c8c;
+    --tint-peach: #e6915d;
+    --tint-lime: #c0d4a7;
+    --tint-sky: #9ab6c8;
+    --tint-steel: #a5b8c0;
+    --tint-periwinkle: #9aa6ea;
+
+    --font-display: "Inter Tight", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "Courier New", Courier, monospace;
+}
+
 /* ===== Reset & Base ===== */
 * {
     box-sizing: border-box;
@@ -6,34 +45,53 @@
 }
 
 body {
-    font-family: "Segoe UI", Arial, sans-serif;
-    color: #2b2b2b;
-    background-color: #f5f6f8;
+    font-family: var(--font-display);
+    color: var(--foreground);
+    background-color: var(--background);
     line-height: 1.5;
 }
 
+/* Literal page frame: fixed black border, never participates in layout. */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    border: 8px solid var(--frame-ink);
+    pointer-events: none;
+    z-index: 100;
+}
+
 a {
-    color: #1d5b8a;
-    text-decoration: none;
+    color: var(--link);
+    text-decoration: underline;
 }
 
 a:hover {
-    text-decoration: underline;
+    color: var(--primary);
 }
 
 /* ===== Header & Navbar (Flexbox) ===== */
 header {
-    background-color: #1d5b8a;
-    color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: var(--frame-ink);
+    color: var(--on-ink);
     padding: 1rem 1.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
+    gap: 0.75rem;
+    border-bottom: 2px solid var(--frame-ink);
 }
 
 header h1 {
-    font-size: 1.4rem;
+    font-size: 1.25rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--on-ink);
 }
 
 header nav ul {
@@ -43,20 +101,47 @@ header nav ul {
 }
 
 header nav a {
-    color: #fff;
-    font-weight: 500;
+    color: var(--link-on-ink);
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+}
+
+header nav a:hover {
+    color: var(--on-ink);
 }
 
 .auth-status {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: #fff;
+    color: var(--on-ink);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
 .auth-status a {
-    color: #fff;
-    text-decoration: underline;
+    background-color: var(--yellow-sticker);
+    color: var(--frame-ink);
+    border: 2px solid var(--frame-ink);
+    padding: 0.4rem 0.8rem;
+    text-decoration: none;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    box-shadow: 2px 2px 0 0 var(--on-ink);
+}
+
+.auth-status a:hover {
+    color: var(--frame-ink);
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 0 var(--on-ink);
 }
 
 /* ===== Main Layout ===== */
@@ -67,16 +152,23 @@ main {
 }
 
 section {
-    background-color: #fff;
-    border-radius: 8px;
+    background-color: var(--background);
+    border: 1px solid var(--frame-ink);
     padding: 1.5rem;
     margin-bottom: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
+/* Ribbon-card title bar: flat tint block with black hairline. */
 section h2 {
     margin-bottom: 1rem;
-    color: #1d5b8a;
+    padding: 0.55rem 0.9rem;
+    background-color: var(--tint-sky);
+    border: 1px solid var(--frame-ink);
+    color: var(--foreground);
+    font-size: 1.05rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
 
 /* ===== Kartu Statistik (CSS Grid) ===== */
@@ -86,23 +178,36 @@ main section:nth-of-type(2) {
     gap: 1rem;
 }
 
+/* Ringkasan heading spans the full row, so the three cards sit below it. */
+main section:nth-of-type(2) h2 {
+    grid-column: 1 / -1;
+    margin-bottom: 0.5rem;
+    background-color: transparent;
+    border: none;
+    padding: 0.2rem 0;
+}
+
 main section:nth-of-type(2) article {
-    background-color: #eef4fa;
-    border-radius: 8px;
+    background-color: var(--tint-lime);
+    border: 1px solid var(--frame-ink);
     padding: 1.25rem;
     text-align: center;
 }
 
 main section:nth-of-type(2) article h3 {
-    font-size: 0.95rem;
-    color: #55677a;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--foreground);
     margin-bottom: 0.5rem;
 }
 
 main section:nth-of-type(2) article p {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #1d5b8a;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--foreground);
+    font-family: var(--font-display);
 }
 
 /* ===== Tabel ===== */
@@ -113,49 +218,67 @@ table {
 
 th, td {
     text-align: left;
-    padding: 0.65rem 0.75rem;
-    border-bottom: 1px solid #e2e6ea;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--frame-ink);
 }
 
 thead {
-    background-color: #1d5b8a;
-    color: #fff;
+    background-color: var(--frame-ink);
+    color: var(--on-ink);
+}
+
+thead th {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
 }
 
 tbody tr:nth-child(even) {
-    background-color: #f7f9fb;
+    background-color: var(--muted);
 }
 
 tbody tr:hover {
-    background-color: #eef4fa;
+    background-color: var(--tint-lime);
 }
 
+/* Action controls: Edit is the yellow sticker, Hapus is destructive red.
+   Selector is specific enough to beat the generic `form button[type="submit"]`. */
+td form.form-hapus button[type="submit"],
 td button {
     padding: 0.35rem 0.7rem;
     margin-right: 0.35rem;
-    border: none;
-    border-radius: 4px;
+    border: 1px solid var(--frame-ink);
+    background-color: var(--destructive);
+    color: var(--on-ink);
     cursor: pointer;
-    font-size: 0.85rem;
-}
-
-td button:first-of-type,
-td a.btn-edit {
-    background-color: #f0ad4e;
-    color: #fff;
-}
-
-td button:last-of-type {
-    background-color: #d9534f;
-    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-family: var(--font-display);
+    box-shadow: 2px 2px 0 0 var(--frame-ink);
 }
 
 td a.btn-edit {
     display: inline-block;
     padding: 0.35rem 0.7rem;
     margin-right: 0.35rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
+    border: 1px solid var(--frame-ink);
+    background-color: var(--yellow-sticker);
+    color: var(--frame-ink);
+    text-decoration: none;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    box-shadow: 2px 2px 0 0 var(--frame-ink);
+}
+
+td a.btn-edit:hover {
+    color: var(--frame-ink);
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 0 var(--frame-ink);
 }
 
 td form.form-hapus {
@@ -171,30 +294,23 @@ td form.form-hapus {
 
 .pagination a {
     padding: 0.4rem 0.75rem;
-    border: 1px solid #cdd4da;
-    border-radius: 4px;
-    color: #1d5b8a;
+    border: 1px solid var(--frame-ink);
+    background-color: var(--background);
+    color: var(--foreground);
+    text-decoration: none;
+    font-weight: 700;
+    font-family: var(--font-display);
+}
+
+.pagination a:hover {
+    background-color: var(--yellow-sticker);
+    color: var(--frame-ink);
 }
 
 .pagination a.active {
-    background-color: #1d5b8a;
-    color: #fff;
-    border-color: #1d5b8a;
-}
-
-.search-box form {
-    display: flex;
-    gap: 0.5rem;
-    align-items: flex-end;
-}
-
-.search-box button {
-    padding: 0.55rem 1.2rem;
-    border: none;
-    border-radius: 4px;
-    background-color: #1d5b8a;
-    color: #fff;
-    cursor: pointer;
+    background-color: var(--frame-ink);
+    color: var(--on-ink);
+    border-color: var(--frame-ink);
 }
 
 /* ===== Form ===== */
@@ -205,40 +321,57 @@ form p {
 form label {
     display: block;
     margin-bottom: 0.35rem;
-    font-weight: 600;
-    color: #444;
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--foreground);
+    font-family: var(--font-display);
 }
 
 form input,
 form select {
     width: 100%;
     max-width: 400px;
-    padding: 0.55rem 0.7rem;
-    border: 1px solid #cdd4da;
-    border-radius: 4px;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--frame-ink);
+    background-color: var(--background);
+    color: var(--foreground);
     font-size: 1rem;
+    font-family: var(--font-display);
 }
 
 form button[type="submit"] {
-    background-color: #1d5b8a;
-    color: #fff;
-    border: none;
+    background-color: var(--frame-ink);
+    color: var(--on-ink);
+    border: 1px solid var(--frame-ink);
     padding: 0.6rem 1.5rem;
-    border-radius: 4px;
-    font-size: 1rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-family: var(--font-display);
     cursor: pointer;
+    box-shadow: 2px 2px 0 0 var(--frame-ink);
 }
 
 form button[type="submit"]:hover {
-    background-color: #164869;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
 }
 
 /* ===== Footer ===== */
 footer {
     text-align: center;
     padding: 1.25rem;
-    color: #7a8794;
-    font-size: 0.9rem;
+    margin-top: 2rem;
+    border-top: 2px solid var(--frame-ink);
+    color: var(--foreground);
+    font-size: 0.8rem;
+}
+
+footer a {
+    color: var(--link);
 }
 
 /* ===== Tabel Responsif ===== */
@@ -250,7 +383,7 @@ footer {
 .nav-toggle-label {
     display: none;
     font-size: 1.6rem;
-    color: #fff;
+    color: var(--on-ink);
     background: none;
     border: none;
     cursor: pointer;
@@ -259,26 +392,31 @@ footer {
 /* ===== Flash Message ===== */
 .flash {
     padding: 0.75rem 1rem;
-    border-radius: 6px;
     margin-bottom: 1rem;
-    font-weight: 500;
+    border: 1px solid var(--frame-ink);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    box-shadow: 2px 2px 0 0 var(--frame-ink);
 }
 
 .flash-success {
-    background-color: #d4edda;
-    color: #155724;
+    background-color: var(--tint-lime);
+    color: var(--success-ink);
 }
 
 .flash-error {
-    background-color: #f8d7da;
-    color: #721c24;
+    background-color: var(--tint-salmon);
+    color: var(--destructive-ink);
 }
 
 /* ===== Pesan Error Validasi ===== */
 .error {
     display: block;
-    color: #d9534f;
-    font-size: 0.85rem;
+    color: var(--destructive);
+    font-size: 0.8rem;
+    font-weight: 700;
     margin-top: 0.25rem;
 }
 
@@ -287,18 +425,48 @@ footer {
     margin-bottom: 1rem;
 }
 
+.search-box form {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+}
+
 .search-box input {
     width: 100%;
     max-width: 320px;
     padding: 0.5rem 0.75rem;
-    border: 1px solid #cdd4da;
-    border-radius: 4px;
+    border: 1px solid var(--frame-ink);
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-display);
+}
+
+.search-box form button {
+    padding: 0.55rem 1.2rem;
+    border: 1px solid var(--frame-ink);
+    background-color: var(--yellow-sticker);
+    color: var(--frame-ink);
+    cursor: pointer;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-family: var(--font-display);
+    box-shadow: 2px 2px 0 0 var(--frame-ink);
+}
+
+.search-box form button:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 0 var(--frame-ink);
 }
 
 /* ===== Responsive Breakpoints ===== */
 
 /* Tablet ke bawah */
 @media (max-width: 768px) {
+    body::before {
+        border-width: 4px;
+    }
+
     main section:nth-of-type(2) {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -306,6 +474,10 @@ footer {
 
 /* Mobile */
 @media (max-width: 480px) {
+    body::before {
+        border-width: 2px;
+    }
+
     header {
         position: relative;
     }
